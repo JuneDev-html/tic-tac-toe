@@ -1,6 +1,11 @@
 const gameBoard = (() => {
   var board = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-  return { board }
+  var getBoard = () => board;
+  var move = (char, spot) => {
+    board[spot] = char;
+    getBoard();
+  }
+  return { move, getBoard }
 })();
 
 const Player = (name) => {
@@ -25,5 +30,5 @@ const june = Player('June');
 
 console.dir(gameBoard)
 
-gameBoard.board[0] = '2';
-console.dir(gameBoard)
+gameBoard.move('X', 2)
+console.dir(gameBoard.getBoard())

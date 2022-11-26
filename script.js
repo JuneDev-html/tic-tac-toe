@@ -1,9 +1,10 @@
 const gameBoard = (() => {
   var board = [0, 0, 0, 0, 0, 0, 0, 0, 0];
   var getBoard = () => board;
-  var move = (char, spot) => {
-    board[spot] = char;
+  var move = (char, square) => {
+    board[square] = char;
     getBoard();
+    // if board has 3 in a row anywhere => player.gainPoint()
   }
   return { move, getBoard }
 })();

@@ -2,24 +2,42 @@
 const gameBoard = (() => {
   var board = ['XE', 'XE', 'XE', 'OE', 'OE', 'OE', 'XE', 'XE', 'XE'];
   var getBoard = () => board;
+
   var move = (char, square) => {
     board[square] = char;
     getBoard();
     // if board has 3 in a row anywhere => player.gainPoint()
     // if board has no open spots and there is no winner, game is tied!
   }
+
   var populate = function () {
     for (let i = 0; i < getBoard().length; i++) {
       var square = document.querySelector(`.num${i}`);
       square.innerHTML = getBoard()[i];
     }
   }
-  return { move, getBoard, populate }
+
+  var listen = function () {
+    const board = document.querySelectorAll('.square');
+
+    board.forEach((square) => {
+      square.addEventListener('click', (e) => {
+        if (e.target.innerHTML === 'A') {
+          e.target.innerHTML = june.getMarker();
+        } else {
+          e.target.innerHTML = 'A';
+        }
+      })
+    });
+  }
+
+  return { move, getBoard, populate, listen }
 })();
 
-const Player = (name) => {
+const Player = (name, marker) => {
   let points = 0;
   const getName = () => name;
+  const getMarker = () => marker; // update to only allow specific character
   const getPoints = () => points;
   const lose = () => {
     console.log('Wasted');
@@ -32,20 +50,29 @@ const Player = (name) => {
     }
   }
 
-  return { gainPoint, name }
+  return { getPoints, gainPoint, getName, getMarker }
 }
 
-// ----- GAMEBOARD DISPLAY POPULATE --------
 
 
 
 
 
+
+
+
+
+
+
+
+
+// ------- ------- RUN INITIAL FUNCTIONS AND METHODS ------- -------
 
 gameBoard.populate();
-const june = Player('June');
+gameBoard.listen();
 
-console.dir(gameBoard)
+const june = Player('June', 'J');
 
-gameBoard.move('X', 2)
-console.dir(gameBoard.getBoard())
+
+
+

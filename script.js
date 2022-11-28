@@ -5,6 +5,7 @@ const gameBoard = (() => {
     board[square] = char;
     getBoard();
     // if board has 3 in a row anywhere => player.gainPoint()
+    // if board has no open spots and there is no winner, game is tied!
   }
   return { move, getBoard }
 })();

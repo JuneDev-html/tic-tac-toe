@@ -1,0 +1,51 @@
+body {
+  margin: 0;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.body-wrap {
+  background-color: #000;
+  color: white;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  grid-auto-rows: 100px;
+  place-items: center;
+}
+
+.board div {
+  padding: 43px;
+}
+
+.square.top {
+  border-bottom: 2px solid white;
+}
+
+.square.left {
+  border-right: 2px solid white;
+}
+
+.square.right {
+  border-left: 2px solid white;
+}
+
+.square.bottom {
+  border-top: 2px solid white;
+}
+
+.score-board {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+}
+
+.score-board div {
+  margin: 20px;
+}

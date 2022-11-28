@@ -17,10 +17,10 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 100px);
   grid-auto-rows: 100px;
-  place-items: center;
+  justify-content: center;
+  align-items: center;
   margin-bottom: 20px;
 }
-
 
 
 .square {
@@ -29,6 +29,9 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 60px;
+  font-weight: 800;
+  cursor: pointer;
 }
 
 .square.top {
@@ -55,4 +58,5 @@ body {
 
 .score-board div {
   margin: 20px;
+  letter-spacing: 4px;
 }

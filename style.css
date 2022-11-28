@@ -18,10 +18,17 @@ body {
   grid-template-columns: repeat(3, 100px);
   grid-auto-rows: 100px;
   place-items: center;
+  margin-bottom: 20px;
 }
 
-.board div {
-  padding: 43px;
+
+
+.square {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .square.top {

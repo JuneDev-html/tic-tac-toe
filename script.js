@@ -1,5 +1,6 @@
+// ------ ------- MAIN GAME CONTROL ------- -------
 const gameBoard = (() => {
-  var board = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+  var board = ['XE', 'XE', 'XE', 'OE', 'OE', 'OE', 'XE', 'XE', 'XE'];
   var getBoard = () => board;
   var move = (char, square) => {
     board[square] = char;
@@ -27,6 +28,17 @@ const Player = (name) => {
 
   return { gainPoint, name }
 }
+
+// ----- GAMEBOARD DISPLAY POPULATE --------
+
+
+for (i = 0; i < gameBoard.getBoard().length; i++) {
+  var square = document.querySelector(`.num${i}`);
+  square.innerHTML = gameBoard.getBoard()[i];
+}
+
+
+
 
 const june = Player('June');
 

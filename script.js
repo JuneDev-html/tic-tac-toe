@@ -8,7 +8,13 @@ const gameBoard = (() => {
     // if board has 3 in a row anywhere => player.gainPoint()
     // if board has no open spots and there is no winner, game is tied!
   }
-  return { move, getBoard }
+  var populate = function () {
+    for (let i = 0; i < getBoard().length; i++) {
+      var square = document.querySelector(`.num${i}`);
+      square.innerHTML = getBoard()[i];
+    }
+  }
+  return { move, getBoard, populate }
 })();
 
 const Player = (name) => {
@@ -32,14 +38,11 @@ const Player = (name) => {
 // ----- GAMEBOARD DISPLAY POPULATE --------
 
 
-for (i = 0; i < gameBoard.getBoard().length; i++) {
-  var square = document.querySelector(`.num${i}`);
-  square.innerHTML = gameBoard.getBoard()[i];
-}
 
 
 
 
+gameBoard.populate();
 const june = Player('June');
 
 console.dir(gameBoard)

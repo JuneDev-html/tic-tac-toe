@@ -35,19 +35,19 @@ body {
 }
 
 .square.top {
-  border-bottom: 2px solid white;
+  border-bottom: 3px solid white;
 }
 
 .square.left {
-  border-right: 2px solid white;
+  border-right: 3px solid white;
 }
 
 .square.right {
-  border-left: 2px solid white;
+  border-left: 3px solid white;
 }
 
 .square.bottom {
-  border-top: 2px solid white;
+  border-top: 3px solid white;
 }
 
 .score-board {
@@ -69,4 +69,9 @@ body {
 
 .score .points {
   min-height: 20px;
+}
+
+footer {
+  font-size: 14px;
+  letter-spacing: 5px;
 }

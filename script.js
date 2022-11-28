@@ -1,11 +1,14 @@
-// CHANGE CHANGE CHANGE
+
 // ------ ------- MAIN GAME CONTROL ------- -------
-var turn = true;
+
 
 const gameBoard = (() => {
+  var tie = 0;
+  var turn = true;
+  var turns = 0;
   var board = ['', '', '', '', '', '', '', '', ''];
   var getBoard = () => board;
-
+  
   var move = (marker, square) => {
     board[square] = marker;
     getBoard();
@@ -36,8 +39,9 @@ const gameBoard = (() => {
             // if checkWinner returns true
             if (checkWinner(p1)) {
               
-              // stop rest from firing off until next click
+              // stop trigger from first click from finishing fire
               e.stopImmediatePropagation();
+
               // fire these things on click
               var boardDone = document.querySelector('.board');
               boardDone.addEventListener('click', () => {
@@ -47,12 +51,27 @@ const gameBoard = (() => {
             
             };
             
-            turn = false;
+            // if no more turns available
+            if (!nextTurn()){
+              tie++;
+              document.querySelector('.tie.points').innerHTML = tie.toString();
+              
+              // stop trigger from first click from finishing fire
+              e.stopImmediatePropagation();
+
+              var boardDone = document.querySelector('.board');
+              boardDone.addEventListener('click', () => {
+                restart();
+                return turn = true;
+              }, {once : true}); // make event listener only listen once
+            }
+          
+            // if turn != true then its player2's turn
           } else {
             e.target.innerHTML = p2.getMarker();
             move(p2.getMarker(), e.target.dataset.value)
 
-            if (checkWinner(p2)) {
+             if (checkWinner(p2)) {
               
               e.stopImmediatePropagation();
               var boardDone = document.querySelector('.board');
@@ -60,8 +79,21 @@ const gameBoard = (() => {
                 restart();
               }, {once : true});
             }
-            
-            turn = true;
+
+            // if no more turns available
+            nextTurn();
+            // if (!nextTurn()){
+            //   tie++;
+            //   document.querySelector('.tie.points').innerHTML = '1';
+              
+            //   e.stopImmediatePropagation();
+
+            //   var boardDone = document.querySelector('.board');
+            //   boardDone.addEventListener('click', () => {
+            //     restart();
+            //     return turn = true;
+            //   }, {once : true}); // make event listener only listen once
+            // }
           }
         }
       })
@@ -73,10 +105,11 @@ const gameBoard = (() => {
   }
 
   var restart = () => {
-        for (let i = 0; i < board.length; i++) {
-          move('', i)
-        populate();
-        }
+    for (let i = 0; i < board.length; i++) {
+      move('', i)
+    }
+    populate();
+    turns = 0;     
   }
   
 
@@ -118,9 +151,20 @@ const gameBoard = (() => {
             console.log(player.getPoints());
             document.querySelector(`.${player.getName()}.points`).innerHTML = player.getPoints();
             return true;
-            
           }
-        }
+  }
+
+  var nextTurn = () => {
+    turns++;
+    if (turns < 9) {
+      turn = !turn; 
+    } else {
+      return false
+    }
+    return true;
+  }
+
+
   return { populate, listen }
 })();
 

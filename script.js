@@ -116,12 +116,12 @@ const gameBoard = (() => {
             announceWinner(player);
             player.gainPoint();
             console.log(player.getPoints());
-            document.querySelector(`.${player.getName()}-score`).innerHTML = player.getPoints();
+            document.querySelector(`.${player.getName()}.points`).innerHTML = player.getPoints();
             return true;
             
           }
         }
-  return { move, getBoard, populate, listen }
+  return { populate, listen }
 })();
 
 const Player = (name, marker) => {

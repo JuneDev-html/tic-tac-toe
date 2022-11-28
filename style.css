@@ -56,7 +56,17 @@ body {
   align-items: center;
 }
 
-.score-board div {
-  margin: 20px;
+.score-board .score {
+  display: flex;
+  flex-direction:column;
+  justify-content: center;
+  align-items: center;
+  min-width: 120px;
+  max-height: auto;
+  margin: 0;
   letter-spacing: 4px;
+}
+
+.score .points {
+  min-height: 20px;
 }

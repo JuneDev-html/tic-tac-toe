@@ -23,7 +23,7 @@ const gameBoard = (() => {
         board[random] = 'O';
         setTimeout(() => {
           document.querySelector(`[data-value="${random}"`).innerHTML = 'O';
-          botMoving = false;
+          botMoving = false; // add this in here so player cant move before bot
         }, 400);
         console.log(board)
         trying = false;
@@ -105,9 +105,10 @@ const gameBoard = (() => {
                 restart();
               }, {once : true}); // make event listener only listen once
             
-            };    
+            };
+          nextTurn();    
           }
-        nextTurn();
+        
 
         // turn it back off to start a new game * *
         gameTied = false; 

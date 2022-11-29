@@ -1,6 +1,7 @@
 // ------ ------- MAIN GAME CONTROL ------- -------
 
 const gameBoard = (() => {
+  var botMoving = false;
   var gameTied = false;
   var bot_play = true;
   var tie = 0;
@@ -22,6 +23,7 @@ const gameBoard = (() => {
         board[random] = 'O';
         setTimeout(() => {
           document.querySelector(`[data-value="${random}"`).innerHTML = 'O';
+          botMoving = false;
         }, 400);
         console.log(board)
         trying = false;
@@ -51,7 +53,7 @@ const gameBoard = (() => {
     // if there is nothing in space being click
     if (e.target.innerHTML === '') {
     // If no current winner declared (if winner declared, stop allowing moves)
-      if (noWinner) {
+      if ((!botMoving) && noWinner) {
         
         // ------ PLAYER 1'S TURN ------
         if (p1_turn) {
@@ -84,11 +86,13 @@ const gameBoard = (() => {
             boardDone.addEventListener('click', () => {
               restart();
             }, {once : true});
-            gameTied = true;
+            
+            // turn this on so next bot move isnt activated **
+            gameTied = true; 
           };
            
           if (bot_play === true && (noWinner) && (!gameTied)) {
-
+            botMoving = true;
             botMove();
             
             if (checkWinner(p2)) { 
@@ -104,7 +108,9 @@ const gameBoard = (() => {
             };    
           }
         nextTurn();
-        gameTied = false;
+
+        // turn it back off to start a new game * *
+        gameTied = false; 
         // ----- PLAYER 2'S TURN -----
         } else if (p1_turn === false && bot_play === false) {
           e.target.innerHTML = p2.getMarker();

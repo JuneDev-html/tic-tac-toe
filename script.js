@@ -1,10 +1,10 @@
-
 // ------ ------- MAIN GAME CONTROL ------- -------
 
-
 const gameBoard = (() => {
+  var gameTied = false;
+  var bot_play = true;
   var tie = 0;
-  var turn = true;
+  var p1_turn = true;
   var turns = 0;
   var noWinner = true;
   var board = ['', '', '', '', '', '', '', '', ''];
@@ -12,11 +12,24 @@ const gameBoard = (() => {
   
   var move = (marker, square) => {
     board[square] = marker;
-    getBoard();
-    // if board has 3 in a row anywhere => player.gainPoint()
-    // if board has no open spots and there is no winner, game is tied!
   }
 
+  var botMove = function () {
+    var trying = true;
+    while (trying) {
+      var random = Math.floor(Math.random() * 8);
+      if (board[random] === '') {
+        board[random] = 'O';
+        setTimeout(() => {
+          document.querySelector(`[data-value="${random}"`).innerHTML = 'O';
+        }, 400);
+        console.log(board)
+        trying = false;
+      }
+    }
+  }
+
+  // Populates the gameboard with array values
   var populate = function () {
     for (let i = 0; i < getBoard().length; i++) {
       var square = document.querySelector(`.num${i}`);
@@ -24,92 +37,96 @@ const gameBoard = (() => {
     }
   }
 
+  // Starts listener on each square for clicks
   var listen = function () {
     const game = document.querySelectorAll('.square');
 
     game.forEach((square) => {
-      square.addEventListener('click', (e) => {
-        if (e.target.innerHTML === '') {
-          if (noWinner) {
-            // true === player1's turn
-            if (turn) {
-              // populate square clicked with players marker
-              e.target.innerHTML = p1.getMarker();
-              // reflect change in board array
-              move(p1.getMarker(), e.target.dataset.value)
-              
-              
-              // if checkWinner returns true
-              if (checkWinner(p1)) {
-                console.log(turn)
-                console.log('before stop x')
-                // stop trigger from first click from finishing fire
-                e.stopImmediatePropagation();
-                
-                console.log('after stop x')
-                // fire these things on click
-                var boardDone = document.querySelector('.board');
-                boardDone.addEventListener('click', () => {
-                  restart();
-                  console.log('after restart')
-                  turn = true;
-                }, {once : true}); // make event listener only listen once
-              
-              };
-              
-              // if no more turns available
-              if (!nextTurn()){
-                tie++;
-                document.querySelector('.tie.points').innerHTML = tie.toString();
-                
-                // stop trigger from first click from finishing fire
-                e.stopImmediatePropagation();
-                
+      square.addEventListener('click', takeTurn)
+    })
+  };
 
-                var boardDone = document.querySelector('.board');
-                boardDone.addEventListener('click', () => {
-                  restart();
-                  return turn = true;
-                }, {once : true}); // make event listener only listen once
-              };
+  // function fired off on click
+  var takeTurn = function (e) {
+    // if there is nothing in space being click
+    if (e.target.innerHTML === '') {
+    // If no current winner declared (if winner declared, stop allowing moves)
+      if (noWinner) {
+        
+        // ------ PLAYER 1'S TURN ------
+        if (p1_turn) {
+          
+          // populate square clicked with players marker
+          e.target.innerHTML = p1.getMarker();
+          // reflect change in board array
+          move(p1.getMarker(), e.target.dataset.value)
+           
+          // if checkWinner returns true
+          if (checkWinner(p1)) { 
+            // stop trigger from first click from finishing fire
+            e.stopImmediatePropagation();
+
+            // fire these things on click
+            var boardDone = document.querySelector('.board');
+            boardDone.addEventListener('click', () => {
+              restart();
+            }, {once : true}); // make event listener only listen once
+          
+          };
+          
+          // ----- TIE GAME -----
+          // if no more turns available
+          if (!nextTurn() && (noWinner)){
+            tie++;
+            document.querySelector('.tie.points').innerHTML = tie.toString();
+            e.stopImmediatePropagation();
+            var boardDone = document.querySelector('.board');
+            boardDone.addEventListener('click', () => {
+              restart();
+            }, {once : true});
+            gameTied = true;
+          };
+           
+          if (bot_play === true && (noWinner) && (!gameTied)) {
+
+            botMove();
             
-              // if turn != true then its player2's turn
-            } else {
-              e.target.innerHTML = p2.getMarker();
-              move(p2.getMarker(), e.target.dataset.value)
+            if (checkWinner(p2)) { 
+              // stop trigger from first click from finishing fire
+              e.stopImmediatePropagation();
+  
+              // fire these things on click
+              var boardDone = document.querySelector('.board');
+              boardDone.addEventListener('click', () => {
+                restart();
+              }, {once : true}); // make event listener only listen once
+            
+            };    
+          }
+        nextTurn();
+        gameTied = false;
+        // ----- PLAYER 2'S TURN -----
+        } else if (p1_turn === false && bot_play === false) {
+          e.target.innerHTML = p2.getMarker();
+          move(p2.getMarker(), e.target.dataset.value)
 
-              if (checkWinner(p2)) {
-                console.log('before stop O')
-                e.stopImmediatePropagation();
-                console.log('after stop O')
-                var boardDone = document.querySelector('.board');
-                boardDone.addEventListener('click', () => {
-                  restart();
-                }, {once : true});
-              }
+          if (checkWinner(p2)) {
+            e.stopImmediatePropagation();
+            
+            var boardDone = document.querySelector('.board');
+            boardDone.addEventListener('click', () => {
+              restart();
+            }, {once : true});
+          };
+          nextTurn();
+        } 
 
-              // if no more turns available
-              if (!nextTurn()){
-                tie++;
-                document.querySelector('.tie.points').innerHTML = '1';
-                
-                e.stopImmediatePropagation();
-
-                var boardDone = document.querySelector('.board');
-                boardDone.addEventListener('click', () => {
-                  restart();
-                  return turn = true;
-                }, {once : true}); // make event listener only listen once
-              }
-            } 
-          } 
-        }
-      })
-    });
-  }
+      } 
+    } 
+  };
 
   var announceWinner = (currPlayer) => {
-    console.log(`${currPlayer.getName()} is the winner!`)
+    console.log(`${currPlayer.getName()}: +1!`)
   }
 
   var restart = () => {
@@ -118,47 +135,49 @@ const gameBoard = (() => {
     }
     populate();
     noWinner = true;
-    turns = 0;     
+    p1_turn = true;
+    turns = 0;
   }
   
 
   var checkWinner = (player) => {
-    if (  board[0] === player.getMarker() &&
-          board[1] === player.getMarker() &&
-          board[2] === player.getMarker() 
+    var marker = player.getMarker();
+
+    if (  board[0] === marker &&
+          board[1] === marker &&
+          board[2] === marker 
           ||
-          board[3] === player.getMarker() &&
-          board[4] === player.getMarker() &&
-          board[5] === player.getMarker()
+          board[3] === marker &&
+          board[4] === marker &&
+          board[5] === marker
           ||
-          board[6] === player.getMarker() &&
-          board[7] === player.getMarker() &&
-          board[8] === player.getMarker()
+          board[6] === marker &&
+          board[7] === marker &&
+          board[8] === marker
           ||
-          board[0] === player.getMarker() &&
-          board[3] === player.getMarker() &&
-          board[6] === player.getMarker() 
+          board[0] === marker &&
+          board[3] === marker &&
+          board[6] === marker 
           ||
-          board[1] === player.getMarker() &&
-          board[4] === player.getMarker() &&
-          board[7] === player.getMarker()
+          board[1] === marker &&
+          board[4] === marker &&
+          board[7] === marker
           ||
-          board[2] === player.getMarker() &&
-          board[5] === player.getMarker() &&
-          board[8] === player.getMarker()
+          board[2] === marker &&
+          board[5] === marker &&
+          board[8] === marker
           ||
-          board[0] === player.getMarker() &&
-          board[4] === player.getMarker() &&
-          board[8] === player.getMarker()
+          board[0] === marker &&
+          board[4] === marker &&
+          board[8] === marker
           ||
-          board[2] === player.getMarker() &&
-          board[4] === player.getMarker() &&
-          board[6] === player.getMarker()) {
+          board[2] === marker &&
+          board[4] === marker &&
+          board[6] === marker) {
             
             noWinner = false;
             announceWinner(player);
             player.gainPoint();
-            console.log(player.getPoints());
             document.querySelector(`.${player.getName()}.points`).innerHTML = player.getPoints();
             return true;
           }
@@ -167,13 +186,12 @@ const gameBoard = (() => {
   var nextTurn = () => {
     turns++;
     if (turns < 9) {
-      turn = !turn; 
+      p1_turn = !p1_turn; 
     } else {
       return false
     }
     return true;
   }
-
 
   return { populate, listen }
 })();

@@ -6,6 +6,7 @@ const gameBoard = (() => {
   var tie = 0;
   var turn = true;
   var turns = 0;
+  var noWinner = true;
   var board = ['', '', '', '', '', '', '', '', ''];
   var getBoard = () => board;
   
@@ -29,72 +30,79 @@ const gameBoard = (() => {
     game.forEach((square) => {
       square.addEventListener('click', (e) => {
         if (e.target.innerHTML === '') {
-          // true === player1's turn
-          if (turn) {
-            // populate square clicked with players marker
-            e.target.innerHTML = p1.getMarker();
-            // reflect change in board array
-            move(p1.getMarker(), e.target.dataset.value)
+          if (noWinner) {
+            // true === player1's turn
+            if (turn) {
+              // populate square clicked with players marker
+              e.target.innerHTML = p1.getMarker();
+              // reflect change in board array
+              move(p1.getMarker(), e.target.dataset.value)
+              
+              
+              // if checkWinner returns true
+              if (checkWinner(p1)) {
+                console.log(turn)
+                console.log('before stop x')
+                // stop trigger from first click from finishing fire
+                e.stopImmediatePropagation();
+                
+                console.log('after stop x')
+                // fire these things on click
+                var boardDone = document.querySelector('.board');
+                boardDone.addEventListener('click', () => {
+                  restart();
+                  console.log('after restart')
+                  turn = true;
+                }, {once : true}); // make event listener only listen once
+              
+              };
+              
+              // if no more turns available
+              if (!nextTurn()){
+                tie++;
+                document.querySelector('.tie.points').innerHTML = tie.toString();
+                
+                // stop trigger from first click from finishing fire
+                e.stopImmediatePropagation();
+                
+
+                var boardDone = document.querySelector('.board');
+                boardDone.addEventListener('click', () => {
+                  restart();
+                  return turn = true;
+                }, {once : true}); // make event listener only listen once
+              };
             
-            // if checkWinner returns true
-            if (checkWinner(p1)) {
-              
-              
-              // stop trigger from first click from finishing fire
-              e.stopImmediatePropagation();
+              // if turn != true then its player2's turn
+            } else {
+              e.target.innerHTML = p2.getMarker();
+              move(p2.getMarker(), e.target.dataset.value)
 
-              // fire these things on click
-              var boardDone = document.querySelector('.board');
-              boardDone.addEventListener('click', () => {
-                restart();
-                turn = true;
-              }, {once : true}); // make event listener only listen once
-            
-            };
-            
-            // if no more turns available
-            if (!nextTurn()){
-              tie++;
-              document.querySelector('.tie.points').innerHTML = tie.toString();
-              
-              // stop trigger from first click from finishing fire
-              e.stopImmediatePropagation();
+              if (checkWinner(p2)) {
+                console.log('before stop O')
+                e.stopImmediatePropagation();
+                console.log('after stop O')
+                var boardDone = document.querySelector('.board');
+                boardDone.addEventListener('click', () => {
+                  restart();
+                }, {once : true});
+              }
 
-              var boardDone = document.querySelector('.board');
-              boardDone.addEventListener('click', () => {
-                restart();
-                return turn = true;
-              }, {once : true}); // make event listener only listen once
-            }
-          
-            // if turn != true then its player2's turn
-          } else {
-            e.target.innerHTML = p2.getMarker();
-            move(p2.getMarker(), e.target.dataset.value)
+              // if no more turns available
+              if (!nextTurn()){
+                tie++;
+                document.querySelector('.tie.points').innerHTML = '1';
+                
+                e.stopImmediatePropagation();
 
-             if (checkWinner(p2)) {
-              
-              e.stopImmediatePropagation();
-              var boardDone = document.querySelector('.board');
-              boardDone.addEventListener('click', () => {
-                restart();
-              }, {once : true});
-            }
-
-            // if no more turns available
-            if (!nextTurn()){
-              tie++;
-              document.querySelector('.tie.points').innerHTML = '1';
-              
-              e.stopImmediatePropagation();
-
-              var boardDone = document.querySelector('.board');
-              boardDone.addEventListener('click', () => {
-                restart();
-                return turn = true;
-              }, {once : true}); // make event listener only listen once
-            }
-          }
+                var boardDone = document.querySelector('.board');
+                boardDone.addEventListener('click', () => {
+                  restart();
+                  return turn = true;
+                }, {once : true}); // make event listener only listen once
+              }
+            } 
+          } 
         }
       })
     });
@@ -109,6 +117,7 @@ const gameBoard = (() => {
       move('', i)
     }
     populate();
+    noWinner = true;
     turns = 0;     
   }
   
@@ -146,6 +155,7 @@ const gameBoard = (() => {
           board[4] === player.getMarker() &&
           board[6] === player.getMarker()) {
             
+            noWinner = false;
             announceWinner(player);
             player.gainPoint();
             console.log(player.getPoints());

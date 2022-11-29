@@ -39,6 +39,7 @@ const gameBoard = (() => {
             // if checkWinner returns true
             if (checkWinner(p1)) {
               
+              
               // stop trigger from first click from finishing fire
               e.stopImmediatePropagation();
 
@@ -46,7 +47,7 @@ const gameBoard = (() => {
               var boardDone = document.querySelector('.board');
               boardDone.addEventListener('click', () => {
                 restart();
-                return turn = true;
+                turn = true;
               }, {once : true}); // make event listener only listen once
             
             };
@@ -81,19 +82,18 @@ const gameBoard = (() => {
             }
 
             // if no more turns available
-            nextTurn();
-            // if (!nextTurn()){
-            //   tie++;
-            //   document.querySelector('.tie.points').innerHTML = '1';
+            if (!nextTurn()){
+              tie++;
+              document.querySelector('.tie.points').innerHTML = '1';
               
-            //   e.stopImmediatePropagation();
+              e.stopImmediatePropagation();
 
-            //   var boardDone = document.querySelector('.board');
-            //   boardDone.addEventListener('click', () => {
-            //     restart();
-            //     return turn = true;
-            //   }, {once : true}); // make event listener only listen once
-            // }
+              var boardDone = document.querySelector('.board');
+              boardDone.addEventListener('click', () => {
+                restart();
+                return turn = true;
+              }, {once : true}); // make event listener only listen once
+            }
           }
         }
       })

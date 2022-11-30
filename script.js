@@ -20,6 +20,7 @@ const gameBoard = (() => {
     while (trying) {
       var random = Math.floor(Math.random() * 8);
       if (board[random] === '') {
+
         board[random] = 'O';
         setTimeout(() => {
           document.querySelector(`[data-value="${random}"`).innerHTML = 'O';
@@ -47,6 +48,77 @@ const gameBoard = (() => {
       square.addEventListener('click', takeTurn)
     })
   };
+
+  var announceWinner = (currPlayer) => {
+    console.log(`${currPlayer.getName()}: +1!`)
+  }
+
+  var restart = () => {
+    for (let i = 0; i < board.length; i++) {
+      move('', i)
+    }
+    populate();
+    noWinner = true;
+    p1_turn = true;
+    turns = 0;
+  }
+  
+  // CHEANGE CHANGE CHANGE 
+  // CHANGE CHANGE CHANGE 
+
+  function rowOf3 (a, b, c) {
+    if (a === b && b === c && a != '') {
+      console.log(a, b, c)
+      return true;
+    }
+  }
+
+  var checkWinner = (player) => {
+    var marker = player.getMarker();
+    var winner = null;
+
+    
+    // horizontal
+    for (let i = 0; i < 7; i += 3) {
+      if (rowOf3(board[(i + 0)], board[(i + 1)], board[(i + 2)])) {
+        winner = player;
+      }
+    }
+
+    // vertical
+    for (let i = 0; i < 3; i++) {
+      if (rowOf3(board[(i + 0)], board[(i + 3)], board[(i + 6)])) {
+        winner = player;
+      }
+    }
+
+    // diagonal
+    if (rowOf3(board[0], board[4], board[8])) {
+      winner = player;
+    }
+
+    if (rowOf3(board[2], board[4], board[6])) {
+      winner = player;
+    }
+
+    if (winner !== null) {    
+      noWinner = false;
+      announceWinner(player);
+      player.gainPoint();
+      document.querySelector(`.${player.getName()}.points`).innerHTML = player.getPoints();
+      return true;
+    }
+  }
+
+  var nextTurn = () => {
+    turns++;
+    if (turns < 9) {
+      p1_turn = !p1_turn; 
+    } else {
+      return false
+    }
+    return true;
+  }
 
   // function fired off on click
   var takeTurn = function (e) {
@@ -87,10 +159,11 @@ const gameBoard = (() => {
               restart();
             }, {once : true});
             
-            // turn this on so next bot move isnt activated **
+            // turn this on to skip bot move --
             gameTied = true; 
           };
            
+          // ------ BOT MOVE ---------
           if (bot_play === true && (noWinner) && (!gameTied)) {
             botMoving = true;
             botMove();
@@ -108,10 +181,9 @@ const gameBoard = (() => {
             };
           nextTurn();    
           }
-        
-
-        // turn it back off to start a new game * *
+        // turn it back off to start a new game --
         gameTied = false; 
+        
         // ----- PLAYER 2'S TURN -----
         } else if (p1_turn === false && bot_play === false) {
           e.target.innerHTML = p2.getMarker();
@@ -131,74 +203,6 @@ const gameBoard = (() => {
       } 
     } 
   };
-
-  var announceWinner = (currPlayer) => {
-    console.log(`${currPlayer.getName()}: +1!`)
-  }
-
-  var restart = () => {
-    for (let i = 0; i < board.length; i++) {
-      move('', i)
-    }
-    populate();
-    noWinner = true;
-    p1_turn = true;
-    turns = 0;
-  }
-  
-
-  var checkWinner = (player) => {
-    var marker = player.getMarker();
-
-    if (  board[0] === marker &&
-          board[1] === marker &&
-          board[2] === marker 
-          ||
-          board[3] === marker &&
-          board[4] === marker &&
-          board[5] === marker
-          ||
-          board[6] === marker &&
-          board[7] === marker &&
-          board[8] === marker
-          ||
-          board[0] === marker &&
-          board[3] === marker &&
-          board[6] === marker 
-          ||
-          board[1] === marker &&
-          board[4] === marker &&
-          board[7] === marker
-          ||
-          board[2] === marker &&
-          board[5] === marker &&
-          board[8] === marker
-          ||
-          board[0] === marker &&
-          board[4] === marker &&
-          board[8] === marker
-          ||
-          board[2] === marker &&
-          board[4] === marker &&
-          board[6] === marker) {
-            
-            noWinner = false;
-            announceWinner(player);
-            player.gainPoint();
-            document.querySelector(`.${player.getName()}.points`).innerHTML = player.getPoints();
-            return true;
-          }
-  }
-
-  var nextTurn = () => {
-    turns++;
-    if (turns < 9) {
-      p1_turn = !p1_turn; 
-    } else {
-      return false
-    }
-    return true;
-  }
 
   return { populate, listen }
 })();

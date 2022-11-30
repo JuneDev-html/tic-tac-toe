@@ -2,7 +2,7 @@
 
 const gameBoard = (() => {
   var botMoving = false;
-  var bot_play = true;
+  var bot_play = false;
   var p1_turn = true;
   var noWinner = true;
   var tie = 0;
@@ -59,7 +59,7 @@ const gameBoard = (() => {
 
   function restart() {
     for (let i = 0; i < board.length; i++) {
-      move('', i);
+      updateBoardArray('', i);
     }
     populate();
     noWinner = true;
@@ -193,7 +193,7 @@ const gameBoard = (() => {
           updateBoardArray(p2.getMarker(), e.target.dataset.value);
 
           if (checkWinner(p2) === 'winner') {
-            declareWin(p1);
+            declareWin(p2);
             e.stopImmediatePropagation();
             stopAndListen();
           };

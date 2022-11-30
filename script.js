@@ -9,8 +9,12 @@ const gameBoard = (() => {
   var board = ['', '', '', '', '', '', '', '', ''];
   var getBoard = () => board;
   
-  var move = (marker, square) => {
+  var updateBoardArray = (marker, square) => {
     board[square] = marker;
+  }
+
+  function updateBoardDisplay(space, player) {
+    space.target.innerHTML = player.getMarker();
   }
 
   var botMove = function () {
@@ -143,10 +147,8 @@ const gameBoard = (() => {
         // ------ PLAYER 1'S TURN ------
         if (p1_turn) {
           
-          // populate square clicked with players marker
-          e.target.innerHTML = p1.getMarker();
-          // reflect change in board array
-          move(p1.getMarker(), e.target.dataset.value)
+          updateBoardDisplay(e, p1);
+          updateBoardArray(p1.getMarker(), e.target.dataset.value)
            
           // if checkWinner returns true
           if (checkWinner(p1) === 'winner') { 
@@ -171,7 +173,6 @@ const gameBoard = (() => {
             
             if (checkWinner(p2) === 'winner') { 
               declareWin(p2);
-              // stop trigger from first click from finishing fire
               e.stopImmediatePropagation();
               stopAndListen();
             };
@@ -188,12 +189,11 @@ const gameBoard = (() => {
         
         // ----- PLAYER 2'S TURN -----
         } else if (p1_turn === false && bot_play === false) {
-          e.target.innerHTML = p2.getMarker();
-          move(p2.getMarker(), e.target.dataset.value)
+          updateBoardDisplay(e, p2);
+          updateBoardArray(p2.getMarker(), e.target.dataset.value)
 
           if (checkWinner(p2) === 'winner') { 
             declareWin(p1);
-            // stop trigger from first click from finishing fire
             e.stopImmediatePropagation();
             stopAndListen();
           };

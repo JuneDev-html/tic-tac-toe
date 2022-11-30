@@ -91,7 +91,7 @@ const gameBoard = (() => {
     p1_turn = !p1_turn;
   }
 
-  function checkWinner(player) {
+  function checkWinner() {
 
     var winner = null;
 
@@ -99,24 +99,24 @@ const gameBoard = (() => {
     // horizontal
     for (let i = 0; i < 7; i += 3) {
       if (rowOf3(board[(i + 0)], board[(i + 1)], board[(i + 2)])) {
-        winner = player;
+        winner = board[i];
       }
     }
 
     // vertical
     for (let i = 0; i < 3; i++) {
       if (rowOf3(board[(i + 0)], board[(i + 3)], board[(i + 6)])) {
-        winner = player;
+        winner = board[i];
       }
     }
 
     // diagonal
     if (rowOf3(board[0], board[4], board[8])) {
-      winner = player;
+      winner = board[0];
     }
 
     if (rowOf3(board[2], board[4], board[6])) {
-      winner = player;
+      winner = board[2];
     }
 
     // no more spaces left to be played
@@ -129,7 +129,7 @@ const gameBoard = (() => {
 
     // if someone has won, run win functions
     if (winner !== null) {
-      return 'winner';
+      return winner;
     }
 
     if (winner === null && freeSpace === 0) {
@@ -151,14 +151,14 @@ const gameBoard = (() => {
           updateBoardArray(p1.getMarker(), e.target.dataset.value);
 
           // if checkWinner returns true
-          if (checkWinner(p1) === 'winner') {
+          if (checkWinner() === 'X') {
             declareWin(p1);
             // stop trigger from first click from finishing fire
             e.stopImmediatePropagation();
             stopAndListen();
           };
 
-          if (checkWinner(p1) === 'tie') {
+          if (checkWinner() === 'tie') {
             declareTie();
             e.stopImmediatePropagation();
             stopAndListen();
@@ -171,7 +171,7 @@ const gameBoard = (() => {
             botMoving = true;
             botMove();
 
-            if (checkWinner(p2) === 'winner') {
+            if (checkWinner(p2) === 'O') {
               declareWin(p2);
               e.stopImmediatePropagation();
               stopAndListen();
@@ -192,13 +192,13 @@ const gameBoard = (() => {
           updateBoardDisplay(e, p2);
           updateBoardArray(p2.getMarker(), e.target.dataset.value);
 
-          if (checkWinner(p2) === 'winner') {
+          if (checkWinner() === 'O') {
             declareWin(p2);
             e.stopImmediatePropagation();
             stopAndListen();
           };
 
-          if (checkWinner(p2) === 'tie') {
+          if (checkWinner() === 'tie') {
             declareTie();
             e.stopImmediatePropagation();
             stopAndListen();

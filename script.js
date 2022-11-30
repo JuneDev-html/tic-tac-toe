@@ -2,7 +2,6 @@
 
 const gameBoard = (() => {
   var botMoving = false;
-  var gameTied = false;
   var bot_play = true;
   var tie = 0;
   var p1_turn = true;
@@ -26,7 +25,6 @@ const gameBoard = (() => {
           document.querySelector(`[data-value="${random}"`).innerHTML = 'O';
           botMoving = false; // add this in here so player cant move before bot
         }, 400);
-        console.log(board)
         trying = false;
       }
     }
@@ -49,10 +47,6 @@ const gameBoard = (() => {
     })
   };
 
-  var announceWinner = (currPlayer) => {
-    console.log(`${currPlayer.getName()}: +1!`)
-  }
-
   var restart = () => {
     for (let i = 0; i < board.length; i++) {
       move('', i)
@@ -68,16 +62,15 @@ const gameBoard = (() => {
 
   function rowOf3 (a, b, c) {
     if (a === b && b === c && a != '') {
-      console.log(a, b, c)
       return true;
     }
   }
 
   var checkWinner = (player) => {
-    var marker = player.getMarker();
+
     var winner = null;
 
-    
+
     // horizontal
     for (let i = 0; i < 7; i += 3) {
       if (rowOf3(board[(i + 0)], board[(i + 1)], board[(i + 2)])) {
@@ -100,15 +93,39 @@ const gameBoard = (() => {
     if (rowOf3(board[2], board[4], board[6])) {
       winner = player;
     }
+    
+    // no more spaces left to be played
+    let freeSpace = 0;
+    for (let i = 0; i < 9; i ++) {
+      if (board[i] === '') {
+        freeSpace++;
+      }
+    }
 
+    // if someone has won, run win functions
     if (winner !== null) {    
-      noWinner = false;
-      announceWinner(player);
-      player.gainPoint();
-      document.querySelector(`.${player.getName()}.points`).innerHTML = player.getPoints();
+      runWin(player);
+      return true;
+    }
+
+    if (winner === null && freeSpace === 0) {
+      runTie();
       return true;
     }
   }
+
+  function runTie() {
+    tie++;
+      document.querySelector('.tie.points').innerHTML = tie.toString();
+      // turn this on to skip bot move --
+      noWinner = false;
+  };
+
+  function runWin(player) {
+    noWinner = false;
+    player.gainPoint();
+    document.querySelector(`.${player.getName()}.points`).innerHTML = player.getPoints();
+  };
 
   var nextTurn = () => {
     turns++;
@@ -147,24 +164,10 @@ const gameBoard = (() => {
             }, {once : true}); // make event listener only listen once
           
           };
-          
-          // ----- TIE GAME -----
-          // if no more turns available
-          if (!nextTurn() && (noWinner)){
-            tie++;
-            document.querySelector('.tie.points').innerHTML = tie.toString();
-            e.stopImmediatePropagation();
-            var boardDone = document.querySelector('.board');
-            boardDone.addEventListener('click', () => {
-              restart();
-            }, {once : true});
-            
-            // turn this on to skip bot move --
-            gameTied = true; 
-          };
+          nextTurn();
            
           // ------ BOT MOVE ---------
-          if (bot_play === true && (noWinner) && (!gameTied)) {
+          if (bot_play === true && (noWinner)) {
             botMoving = true;
             botMove();
             

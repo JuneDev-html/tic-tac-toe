@@ -3,10 +3,9 @@
 const gameBoard = (() => {
   var botMoving = false;
   var bot_play = true;
-  var tie = 0;
   var p1_turn = true;
-  var turns = 0;
   var noWinner = true;
+  var tie = 0;
   var board = ['', '', '', '', '', '', '', '', ''];
   var getBoard = () => board;
   
@@ -47,6 +46,13 @@ const gameBoard = (() => {
     })
   };
 
+  function stopAndListen(){
+    var boardDone = document.querySelector('.board');
+    boardDone.addEventListener('click', () => {
+      restart();
+    }, {once : true});
+  }
+
   var restart = () => {
     for (let i = 0; i < board.length; i++) {
       move('', i)
@@ -55,12 +61,9 @@ const gameBoard = (() => {
     noWinner = true;
     p1_turn = true;
     turns = 0;
-  }
-  
-  // CHEANGE CHANGE CHANGE 
-  // CHANGE CHANGE CHANGE 
+  } 
 
-  function rowOf3 (a, b, c) {
+  function rowOf3(a, b, c) {
     if (a === b && b === c && a != '') {
       return true;
     }
@@ -104,37 +107,30 @@ const gameBoard = (() => {
 
     // if someone has won, run win functions
     if (winner !== null) {    
-      runWin(player);
-      return true;
+      return 'winner';
     }
 
     if (winner === null && freeSpace === 0) {
-      runTie();
-      return true;
+      return 'tie';
     }
   }
 
-  function runTie() {
+  function declareTie() {
     tie++;
-      document.querySelector('.tie.points').innerHTML = tie.toString();
-      // turn this on to skip bot move --
-      noWinner = false;
+    document.querySelector('.tie.points').innerHTML = tie.toString();
+    
+    // turn this on to skip bot move
+    noWinner = false;
   };
 
-  function runWin(player) {
+  function declareWin(player) {
     noWinner = false;
     player.gainPoint();
     document.querySelector(`.${player.getName()}.points`).innerHTML = player.getPoints();
   };
 
   var nextTurn = () => {
-    turns++;
-    if (turns < 9) {
-      p1_turn = !p1_turn; 
-    } else {
-      return false
-    }
-    return true;
+    p1_turn = !p1_turn; 
   }
 
   // function fired off on click
@@ -153,17 +149,19 @@ const gameBoard = (() => {
           move(p1.getMarker(), e.target.dataset.value)
            
           // if checkWinner returns true
-          if (checkWinner(p1)) { 
+          if (checkWinner(p1) === 'winner') { 
+            declareWin(p1);
             // stop trigger from first click from finishing fire
             e.stopImmediatePropagation();
-
-            // fire these things on click
-            var boardDone = document.querySelector('.board');
-            boardDone.addEventListener('click', () => {
-              restart();
-            }, {once : true}); // make event listener only listen once
-          
+            stopAndListen();
           };
+
+          if (checkWinner(p1) === 'tie') {
+            declareTie();
+            e.stopImmediatePropagation();
+            stopAndListen();
+          }
+
           nextTurn();
            
           // ------ BOT MOVE ---------
@@ -171,35 +169,40 @@ const gameBoard = (() => {
             botMoving = true;
             botMove();
             
-            if (checkWinner(p2)) { 
+            if (checkWinner(p2) === 'winner') { 
+              declareWin(p2);
               // stop trigger from first click from finishing fire
               e.stopImmediatePropagation();
-  
-              // fire these things on click
-              var boardDone = document.querySelector('.board');
-              boardDone.addEventListener('click', () => {
-                restart();
-              }, {once : true}); // make event listener only listen once
-            
+              stopAndListen();
             };
-          nextTurn();    
+  
+            if (checkWinner(p2) === 'tie') {
+              declareTie();
+              e.stopImmediatePropagation();
+              stopAndListen();
+            }
+
+            nextTurn();    
           }
-        // turn it back off to start a new game --
-        gameTied = false; 
+        
         
         // ----- PLAYER 2'S TURN -----
         } else if (p1_turn === false && bot_play === false) {
           e.target.innerHTML = p2.getMarker();
           move(p2.getMarker(), e.target.dataset.value)
 
-          if (checkWinner(p2)) {
+          if (checkWinner(p2) === 'winner') { 
+            declareWin(p1);
+            // stop trigger from first click from finishing fire
             e.stopImmediatePropagation();
-            
-            var boardDone = document.querySelector('.board');
-            boardDone.addEventListener('click', () => {
-              restart();
-            }, {once : true});
+            stopAndListen();
           };
+
+          if (checkWinner(p2) === 'tie') {
+            declareTie();
+            e.stopImmediatePropagation();
+            stopAndListen();
+          }
           nextTurn();
         } 
 
@@ -215,15 +218,8 @@ const Player = (name, marker) => {
   const getName = () => name;
   const getMarker = () => marker; // update to only allow specific character
   const getPoints = () => points;
-  const lose = () => {
-    console.log('Wasted');
-  }
-
   const gainPoint = () => {
     points ++;
-    if (points >= 5) {
-      console.log(`${name} wins!`)
-    }
   }
 
   return { getPoints, gainPoint, getName, getMarker }

@@ -9,7 +9,7 @@ const gameBoard = (() => {
   var board = ['', '', '', '', '', '', '', '', ''];
   var getBoard = () => board;
   
-  var updateBoardArray = (marker, square) => {
+  function updateBoardArray(marker, square) {
     board[square] = marker;
   }
 
@@ -17,7 +17,7 @@ const gameBoard = (() => {
     space.target.innerHTML = player.getMarker();
   }
 
-  var botMove = function () {
+  function botMove() {
     var trying = true;
     while (trying) {
       var random = Math.floor(Math.random() * 8);
@@ -34,7 +34,7 @@ const gameBoard = (() => {
   }
 
   // Populates the gameboard with array values
-  var populate = function () {
+  function populate() {
     for (let i = 0; i < getBoard().length; i++) {
       var square = document.querySelector(`.num${i}`);
       square.innerHTML = getBoard()[i];
@@ -42,13 +42,13 @@ const gameBoard = (() => {
   }
 
   // Starts listener on each square for clicks
-  var listen = function () {
+  function listen() {
     const game = document.querySelectorAll('.square');
 
     game.forEach((square) => {
-      square.addEventListener('click', takeTurn)
-    })
-  };
+      square.addEventListener('click', takeTurn);
+    });
+  }
 
   function stopAndListen(){
     var boardDone = document.querySelector('.board');
@@ -57,9 +57,9 @@ const gameBoard = (() => {
     }, {once : true});
   }
 
-  var restart = () => {
+  function restart() {
     for (let i = 0; i < board.length; i++) {
-      move('', i)
+      move('', i);
     }
     populate();
     noWinner = true;
@@ -73,7 +73,25 @@ const gameBoard = (() => {
     }
   }
 
-  var checkWinner = (player) => {
+  function declareTie() {
+    tie++;
+    document.querySelector('.tie.points').innerHTML = tie.toString();
+    
+    // turn this on to skip bot move
+    noWinner = false;
+  };
+
+  function declareWin(player) {
+    noWinner = false;
+    player.gainPoint();
+    document.querySelector(`.${player.getName()}.points`).innerHTML = player.getPoints();
+  };
+
+  function nextTurn() {
+    p1_turn = !p1_turn;
+  }
+
+  function checkWinner(player) {
 
     var winner = null;
 
@@ -100,17 +118,17 @@ const gameBoard = (() => {
     if (rowOf3(board[2], board[4], board[6])) {
       winner = player;
     }
-    
+
     // no more spaces left to be played
     let freeSpace = 0;
-    for (let i = 0; i < 9; i ++) {
+    for (let i = 0; i < 9; i++) {
       if (board[i] === '') {
         freeSpace++;
       }
     }
 
     // if someone has won, run win functions
-    if (winner !== null) {    
+    if (winner !== null) {
       return 'winner';
     }
 
@@ -118,40 +136,22 @@ const gameBoard = (() => {
       return 'tie';
     }
   }
-
-  function declareTie() {
-    tie++;
-    document.querySelector('.tie.points').innerHTML = tie.toString();
-    
-    // turn this on to skip bot move
-    noWinner = false;
-  };
-
-  function declareWin(player) {
-    noWinner = false;
-    player.gainPoint();
-    document.querySelector(`.${player.getName()}.points`).innerHTML = player.getPoints();
-  };
-
-  var nextTurn = () => {
-    p1_turn = !p1_turn; 
-  }
-
+  
   // function fired off on click
-  var takeTurn = function (e) {
+  function takeTurn(e) {
     // if there is nothing in space being click
     if (e.target.innerHTML === '') {
-    // If no current winner declared (if winner declared, stop allowing moves)
+      // If no current winner declared (if winner declared, stop allowing moves)
       if ((!botMoving) && noWinner) {
-        
+
         // ------ PLAYER 1'S TURN ------
         if (p1_turn) {
-          
+
           updateBoardDisplay(e, p1);
-          updateBoardArray(p1.getMarker(), e.target.dataset.value)
-           
+          updateBoardArray(p1.getMarker(), e.target.dataset.value);
+
           // if checkWinner returns true
-          if (checkWinner(p1) === 'winner') { 
+          if (checkWinner(p1) === 'winner') {
             declareWin(p1);
             // stop trigger from first click from finishing fire
             e.stopImmediatePropagation();
@@ -165,34 +165,34 @@ const gameBoard = (() => {
           }
 
           nextTurn();
-           
+
           // ------ BOT MOVE ---------
           if (bot_play === true && (noWinner)) {
             botMoving = true;
             botMove();
-            
-            if (checkWinner(p2) === 'winner') { 
+
+            if (checkWinner(p2) === 'winner') {
               declareWin(p2);
               e.stopImmediatePropagation();
               stopAndListen();
             };
-  
+
             if (checkWinner(p2) === 'tie') {
               declareTie();
               e.stopImmediatePropagation();
               stopAndListen();
             }
 
-            nextTurn();    
+            nextTurn();
           }
-        
-        
-        // ----- PLAYER 2'S TURN -----
+
+
+          // ----- PLAYER 2'S TURN -----
         } else if (p1_turn === false && bot_play === false) {
           updateBoardDisplay(e, p2);
-          updateBoardArray(p2.getMarker(), e.target.dataset.value)
+          updateBoardArray(p2.getMarker(), e.target.dataset.value);
 
-          if (checkWinner(p2) === 'winner') { 
+          if (checkWinner(p2) === 'winner') {
             declareWin(p1);
             e.stopImmediatePropagation();
             stopAndListen();
@@ -204,11 +204,11 @@ const gameBoard = (() => {
             stopAndListen();
           }
           nextTurn();
-        } 
+        }
 
-      } 
-    } 
-  };
+      }
+    }
+  }
 
   return { populate, listen }
 })();

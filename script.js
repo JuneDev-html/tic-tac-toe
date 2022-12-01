@@ -11,7 +11,7 @@ const gameBoard = (() => {
   
   
   
-  // ----- ----- player button logic ------ -----
+  // ----- ----- PLAYER BUTTON LOGIC ------ -----
   
   const pvp = document.querySelector('.pvp');
   const pvb = document.querySelector('.pvb');
@@ -35,20 +35,15 @@ const gameBoard = (() => {
     pvb.classList.toggle('active')
     bot_play = !bot_play;
     restart();
-    p1.restartPoints();
-    p2.restartPoints();
-    tie = 0;
-    document.querySelector(`.p1.points`).innerHTML = '';
-    document.querySelector(`.p2.points`).innerHTML = '';
-    document.querySelector(`.tie.points`).innerHTML = '';
+    restartScoreboard();
   };
 
   // start game with pvp active
   pvp.classList.toggle('active');
 
-
-
-
+  
+  
+  // ------ ------ GAMEPLAY LOGIC ------ -------- 
   function updateBoardArray(marker, square) {
     board[square] = marker;
   }
@@ -106,6 +101,15 @@ const gameBoard = (() => {
     p1_turn = true;
     turns = 0;
   } 
+
+  function restartScoreboard() {
+    p1.restartPoints();
+    p2.restartPoints();
+    tie = 0;
+    document.querySelector(`.p1.points`).innerHTML = '';
+    document.querySelector(`.p2.points`).innerHTML = '';
+    document.querySelector(`.tie.points`).innerHTML = '';
+  }
 
   function rowOf3(a, b, c) {
     if (a === b && b === c && a != '') {

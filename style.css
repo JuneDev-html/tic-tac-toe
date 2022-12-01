@@ -16,6 +16,7 @@ body {
 }
 
 .title {
+  margin-top: 10px;
   letter-spacing: 5px;
 }
 
@@ -125,4 +126,5 @@ body {
 footer {
   font-size: 14px;
   letter-spacing: 5px;
+  margin-bottom: 10px;
 }

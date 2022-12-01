@@ -2,26 +2,20 @@
 
 const gameBoard = (() => {
   var botMoving = false;
-  var bot_play = true;
+  var bot_play = false;
   var p1_turn = true;
   var noWinner = true;
   var tie = 0;
   var board = ['', '', '', '', '', '', '', '', ''];
   var getBoard = () => board;
   
-
-  // CHANGE CHANGE CHANGE
-  // CHANGE CHANGE CHANGE
-
+  
+  
+  // ----- ----- player button logic ------ -----
+  
   const pvp = document.querySelector('.pvp');
   const pvb = document.querySelector('.pvb');
-
-  function togglePlayer() {
-    pvp.classList.toggle('active')
-    pvb.classList.toggle('active')
-  };
-
-  // add listener to each button
+  
   pvp.addEventListener('click', () => {
     togglePlayer();
   });
@@ -30,6 +24,26 @@ const gameBoard = (() => {
     togglePlayer();
   });
 
+  /* 
+   * Changes which button is active
+   * changes whether bot_play is true/false
+   * clears the score
+   * runs restart function
+   */ 
+  function togglePlayer() {
+    pvp.classList.toggle('active')
+    pvb.classList.toggle('active')
+    bot_play = !bot_play;
+    restart();
+    p1.restartPoints();
+    p2.restartPoints();
+    tie = 0;
+    document.querySelector(`.p1.points`).innerHTML = '';
+    document.querySelector(`.p2.points`).innerHTML = '';
+    document.querySelector(`.tie.points`).innerHTML = '';
+  };
+
+  // start game with pvp active
   pvp.classList.toggle('active');
 
 
@@ -244,11 +258,14 @@ const Player = (name, marker) => {
   const getName = () => name;
   const getMarker = () => marker; // update to only allow specific character
   const getPoints = () => points;
+  const restartPoints = () => {
+    points = 0;
+  }
   const gainPoint = () => {
     points ++;
   }
 
-  return { getPoints, gainPoint, getName, getMarker }
+  return { getPoints, gainPoint, getName, getMarker, restartPoints }
 }
 
 

@@ -2,7 +2,7 @@
 
 const gameBoard = (() => {
   var botMoving = false;
-  var bot_play = false;
+  var bot_play = true;
   var p1_turn = true;
   var noWinner = true;
   var tie = 0;
@@ -163,7 +163,6 @@ const gameBoard = (() => {
             e.stopImmediatePropagation();
             stopAndListen();
           }
-
           nextTurn();
 
           // ------ BOT MOVE ---------

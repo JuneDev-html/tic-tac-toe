@@ -1,6 +1,7 @@
 body {
   margin: 0;
   font-family: 'Orbitron', sans-serif;
+  height: 100vh;
 }
 
 .body-wrap {
@@ -11,10 +12,47 @@ body {
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
+  transition: 1s;
 }
 
 .title {
   letter-spacing: 5px;
+}
+
+.game{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.players-choice {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 90px;
+  transition: 1s;
+}
+
+.players-choice button {
+  padding: 5px 20px;
+  margin: 0px 40px;
+  background-color: #000;
+  color: rgb(81, 81, 81);
+  font-family: inherit;
+  font-size: 16px;
+  letter-spacing: 3px;
+  border: 2px solid rgb(81, 81, 81);
+  border-radius: 5px;
+  
+  cursor: pointer; 
+  transition: .15s;
+}
+
+.players-choice button:hover{
+  transition: .15s;
+  -webkit-box-shadow: -1px 7px 22px -2px rgba(176, 176, 176, 0.318);
+  box-shadow: -1px 7px 22px -2px rgba(176, 176, 176, 0.318);
 }
 
 .board {
@@ -24,6 +62,7 @@ body {
   justify-content: center;
   align-items: center;
   margin-bottom: 20px;
+  transition: .5s;
 }
 
 
@@ -60,6 +99,10 @@ body {
   align-items: center;
 }
 
+.score-board div {
+  transition: .5s;
+}
+
 .score-board .score {
   display: flex;
   flex-direction:column;
@@ -69,6 +112,7 @@ body {
   max-height: auto;
   margin: 0;
   letter-spacing: 4px;
+  transition: 1s;
 }
 
 .score .points {

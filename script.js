@@ -38,12 +38,21 @@ const gameBoard = (() => {
     restartScoreboard();
   };
 
-  // start game with pvp active
+  // default pvp active
   pvp.classList.toggle('active');
 
-  
-  
+
   // ------ ------ GAMEPLAY LOGIC ------ -------- 
+
+  // Starts listener on each square for clicks
+  function listen() {
+    const game = document.querySelectorAll('.square');
+
+    game.forEach((square) => {
+      square.addEventListener('click', takeTurn);
+    });
+  }
+
   function updateBoardArray(marker, square) {
     board[square] = marker;
   }
@@ -68,7 +77,7 @@ const gameBoard = (() => {
     }
   }
 
-  // Populates the gameboard with array values
+  // Populates the gameboard display with array values
   function populate() {
     for (let i = 0; i < getBoard().length; i++) {
       var square = document.querySelector(`.num${i}`);
@@ -76,15 +85,7 @@ const gameBoard = (() => {
     }
   }
 
-  // Starts listener on each square for clicks
-  function listen() {
-    const game = document.querySelectorAll('.square');
-
-    game.forEach((square) => {
-      square.addEventListener('click', takeTurn);
-    });
-  }
-
+  // if winner/tie => stop everything and restart on click
   function stopAndListen(){
     var boardDone = document.querySelector('.board');
     boardDone.addEventListener('click', () => {
@@ -111,6 +112,7 @@ const gameBoard = (() => {
     document.querySelector(`.tie.points`).innerHTML = '';
   }
 
+  // checks board for 3 in a row of something
   function rowOf3(a, b, c) {
     if (a === b && b === c && a != '') {
       return true;

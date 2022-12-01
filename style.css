@@ -44,15 +44,16 @@ body {
   letter-spacing: 3px;
   border: 2px solid rgb(81, 81, 81);
   border-radius: 5px;
-  
   cursor: pointer; 
   transition: .15s;
 }
 
-.players-choice button:hover{
-  transition: .15s;
-  -webkit-box-shadow: -1px 7px 22px -2px rgba(176, 176, 176, 0.318);
-  box-shadow: -1px 7px 22px -2px rgba(176, 176, 176, 0.318);
+.players-choice .active {
+  border: 2px solid #fff;
+  color: #fff;
+  transition: .25s;
+  -webkit-box-shadow: -1px 7px 22px 0px rgba(176, 176, 176, 0.318);
+  box-shadow: -1px 7px 22px 0px rgba(176, 176, 176, 0.318);
 }
 
 .board {

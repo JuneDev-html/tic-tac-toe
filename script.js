@@ -9,6 +9,32 @@ const gameBoard = (() => {
   var board = ['', '', '', '', '', '', '', '', ''];
   var getBoard = () => board;
   
+
+  // CHANGE CHANGE CHANGE
+  // CHANGE CHANGE CHANGE
+
+  const pvp = document.querySelector('.pvp');
+  const pvb = document.querySelector('.pvb');
+
+  function togglePlayer() {
+    pvp.classList.toggle('active')
+    pvb.classList.toggle('active')
+  };
+
+  // add listener to each button
+  pvp.addEventListener('click', () => {
+    togglePlayer();
+  });
+
+  pvb.addEventListener('click', () => {
+    togglePlayer();
+  });
+
+  pvp.classList.toggle('active');
+
+
+
+
   function updateBoardArray(marker, square) {
     board[square] = marker;
   }
@@ -212,6 +238,7 @@ const gameBoard = (() => {
   return { populate, listen }
 })();
 
+// --------- PLAYER CONTROL ---------
 const Player = (name, marker) => {
   let points = 0;
   const getName = () => name;

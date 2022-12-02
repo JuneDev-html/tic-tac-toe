@@ -7,7 +7,7 @@ body {
 .body-wrap {
   background-color: #000;
   color: white;
-  height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -29,15 +29,15 @@ body {
 
 .players-choice {
   display: flex;
-  justify-content: center;
+  width: 100%;
+  justify-content: space-evenly;
   align-items: center;
-  margin-bottom: 90px;
+  margin-bottom: 5vh;;
   transition: 1s;
 }
 
-.players-choice button {
+.players-choice div {
   padding: 5px 20px;
-  margin: 0px 40px;
   background-color: #000;
   color: rgb(81, 81, 81);
   font-family: inherit;
@@ -63,7 +63,7 @@ body {
   grid-auto-rows: 150px;
   justify-content: center;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   transition: .5s;
 }
 
@@ -97,8 +97,9 @@ body {
 
 .score-board {
   display: flex;
-  justify-content: left;
+  justify-content: space-evenly;
   align-items: center;
+  width: 100%;
 }
 
 .score-board div {
@@ -110,9 +111,7 @@ body {
   flex-direction:column;
   justify-content: center;
   align-items: center;
-  min-width: 120px;
   max-height: auto;
-  margin: 0;
   letter-spacing: 4px;
   transition: 1s;
 }
@@ -146,4 +145,16 @@ footer {
   cursor: pointer;
   transition: .3s;
   transform: scale(1.2);
+}
+
+@media only screen and (max-width: 600px) {
+  .board {
+    grid-template-columns: repeat(3, 120px);
+    grid-auto-rows: 120px;
+  }
+
+  .square {
+    width: 120px;
+    height: 120px;
+  }
 }

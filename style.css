@@ -36,7 +36,7 @@ body {
   transition: 1s;
 }
 
-.players-choice div {
+.players-choice button {
   padding: 5px 20px;
   background-color: #000;
   color: rgb(81, 81, 81);

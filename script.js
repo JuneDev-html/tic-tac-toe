@@ -24,12 +24,6 @@ const gameBoard = (() => {
     togglePlayer();
   });
 
-  /* 
-   * Changes which button is active
-   * changes whether bot_play is true/false
-   * clears the score
-   * runs restart function
-   */ 
   function togglePlayer() {
     pvp.classList.toggle('active')
     pvb.classList.toggle('active')
@@ -60,22 +54,78 @@ const gameBoard = (() => {
   function updateBoardDisplay(space, player) {
     space.target.innerHTML = player.getMarker();
   }
+  
 
+  
+  
+  // --------- MINIMAX LOGIC -----------
   function botMove() {
-    var trying = true;
-    while (trying) {
-      var random = Math.floor(Math.random() * 8);
-      if (board[random] === '') {
+    let bestScore = -Infinity;
+    let bestMove;
+      for (let i = 0; i < 9; i++) {
+        if (board[i] === '') {
+          board[i] = 'O';
+          let score = minimax(board, 0, false);
+          console.log(`score: ${score} ${i}`)
+          board[i] = '';
+          if (score > bestScore) {
+            bestScore = score;
+            bestMove = i;
+            console.log(`bestMove: ${bestMove}`)
 
-        board[random] = 'O';
+          }
+        }  
+      }
+      console.log(bestMove)
+      board[bestMove] = 'O';
         setTimeout(() => {
-          document.querySelector(`[data-value="${random}"`).innerHTML = 'O';
-          botMoving = false; // add this in here so player cant move before bot
-        }, 400);
-        trying = false;
+            document.querySelector(`[data-value="${bestMove}"`).innerHTML = 'O';
+            botMoving = false; // add this in here so player cant move before bot
+          }, 400);
+  }
+
+  let scores = {
+    X: -1,
+    O: 1,
+    tie: 0
+  }
+  
+function minimax(board, depth, isMaximizing) {
+  let result = checkWinner();
+  if (result !== null) {
+    return scores[result]
+  }
+
+  if (isMaximizing) {
+    let bestScore = -Infinity;
+    for (let i = 0; i < 9; i++){
+      if (board[i] === '') {
+        board[i] = 'O';
+        let score = minimax(board, depth + 1, false);
+        board[i] = '';
+        bestScore = Math.max(score, bestScore)
       }
     }
+  return bestScore;
+  } else {
+    let bestScore = Infinity;
+    for (let i = 0; i < 9; i++){
+      if (board[i] === '') {
+        board[i] = 'X';
+        let score = minimax(board, depth + 1, true);
+        board[i] = '';
+        bestScore = Math.min(score, bestScore)
+      }
+    }
+    return bestScore;
   }
+}
+// --------- ------------- 
+
+
+
+
+
 
   // Populates the gameboard display with array values
   function populate() {
@@ -181,6 +231,8 @@ const gameBoard = (() => {
     if (winner === null && freeSpace === 0) {
       return 'tie';
     }
+
+    return winner;
   }
   
   // function fired off on click
@@ -201,7 +253,15 @@ const gameBoard = (() => {
             declareWin(p1);
             // stop trigger from first click from finishing fire
             e.stopImmediatePropagation();
+            
+            
+            
+           // --- ADD FLASH HERE
             stopAndListen();
+          
+          
+          
+          
           };
 
           if (checkWinner() === 'tie') {

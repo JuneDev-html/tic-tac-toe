@@ -21,6 +21,13 @@
     console.log(board)
   }
 
-function minimax(board, depth, isMax) {
-  return 1;
+
+function emptyIndexies(board){
+  return  board.filter(s => s != "O" && s != "X");
+}
+
+
+function minimax(newBoard, player) {
+  var availSpots = emptyIndexies(board)
+  console.log(availSpots)
 }
